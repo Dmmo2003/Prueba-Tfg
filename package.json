@@ -1,0 +1,9 @@
+{
+  "name": "TFG",
+  "version": "1.0.0",
+  "description": "TFG",
+  "main": "index.js",
+  "repository": "https://github.com/Dmmo2003/Prueba-Tfg.git",
+  "author": "dmoralesmaroto@gmail.com",
+  "license": "MIT"
+}
