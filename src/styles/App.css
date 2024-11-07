@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+main > * {
+  margin-bottom: 20px;
+}
+
+main > h2 {
+  color: #333;
+}
+
+main > p {
+  color: #666;
+}
+
+main > a {
+  text-decoration: none;
+  color: #337ab7;
+}
+
+main > a:hover {
+  color: #23527c;
+}
+
+main > button {
+  background-color: #337ab7;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+main > button:hover {
+  background-color: #23527c;
+}

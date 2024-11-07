@@ -6,7 +6,11 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-export default function LoginForm() {
+export default function LoginForm({navigate,...props}) {
+
+    const handleClick = () => {
+        navigate(-1);
+    }
     return (
         <div className= "header">
             <Form>
@@ -22,6 +26,9 @@ export default function LoginForm() {
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Iniciar sesion
+                </Button>
+                <Button variant="primary" onClick={handleClick}>
+                    volver
                 </Button>
             </Form>
         </div>

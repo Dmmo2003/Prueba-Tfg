@@ -10,3 +10,8 @@
     gap: 10px;
     margin-left: auto;
 }
+
+.link-sin-estilo {
+    text-decoration: none;
+    color: inherit;
+}

@@ -17,16 +17,21 @@ export default function Header() {
         <>
             <div className="cont">
 
-                <h2>Bienvenido {isLoggedIn ? username : null}</h2>
+                <a href="/" className="link-sin-estilo">
+                <h2 >Bienvenido {isLoggedIn ? username : null}</h2>
+                </a>
+
                 <div className="buttons">
                     <Link to="/login">
                         <Button variant="primary" type="submit" >
                             Iniciar sesion
                         </Button>
                     </Link>
+                    <Link to="/user/register">
                     <Button variant="primary" type="submit">
                         Registrarse
                     </Button>
+                    </Link>
                 </div>
 
             </div>
