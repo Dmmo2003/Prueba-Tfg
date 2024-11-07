@@ -1,6 +1,6 @@
-# React + Vite
+# Prueba TFG
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Es una prueba para un futuro uso de un TFG
 
 Currently, two official plugins are available:
 
