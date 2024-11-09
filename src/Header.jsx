@@ -1,38 +1,46 @@
 import React from "react";
-import { useState } from 'react'
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
+import { useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import './styles/Header.css';
 import { Link } from 'react-router-dom';
+import { UserSessionContext } from "./userSessionContext";
 
-export default function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState("");
 
+export default function Header(props) {
+const { userSession, logout } = useContext(UserSessionContext);
+    const handlleCerrarSesion = () => {
+        logout();
+    }
+
+    console.log(userSession); // Imprime el objeto UserSession
     return (
         <>
             <div className="cont">
 
-                <a href="/" className="link-sin-estilo">
-                <h2 >Bienvenido {isLoggedIn ? username : null}</h2>
-                </a>
-
+                <Link to="/" className="link-sin-estilo">
+                    {/* <h2 >Bienvenido {props.sesionIniciada ? props.user : null}</h2> */}
+                    <h2 >Bienvenido {userSession && userSession.nombre ? userSession.nombre : null}</h2>
+                </Link>
                 <div className="buttons">
-                    <Link to="/login">
-                        <Button variant="primary" type="submit" >
-                            Iniciar sesion
+                    {userSession.logged ? 
+                        <Button variant="primary" type="submit" onClick= {handlleCerrarSesion}> 
+                            Cerrar sesion
                         </Button>
-                    </Link>
-                    <Link to="/user/register">
-                    <Button variant="primary" type="submit">
-                        Registrarse
-                    </Button>
-                    </Link>
+                        :
+                        <>
+                            <Link to="/login">
+                                <Button variant="primary" type="submit" >
+                                    Iniciar sesion
+                                </Button>
+                            </Link>
+                            <Link to="/user/register">
+                                <Button variant="primary" type="submit">
+                                    Registrarse
+                                </Button>
+                            </Link>
+                        </>}
                 </div>
+
 
             </div>
 
