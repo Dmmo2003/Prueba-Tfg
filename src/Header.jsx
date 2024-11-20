@@ -3,27 +3,32 @@ import { useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import './styles/Header.css';
 import { Link } from 'react-router-dom';
-import { UserSessionContext } from "./userSessionContext";
+import { UserContext } from "./UserContext";
+import { logout } from "./api";
 
 
-export default function Header(props) {
-const { userSession, logout } = useContext(UserSessionContext);
+
+export default function Header({ navigate }) {
+    const { user, logoutUser } = useContext(UserContext);
     const handlleCerrarSesion = () => {
         logout();
+        logoutUser();
+        alert('Has cerrado sesión.');
+        navigate('/login');
     }
+    // console.log(user);
 
-    console.log(userSession); // Imprime el objeto UserSession
     return (
         <>
             <div className="cont">
 
                 <Link to="/" className="link-sin-estilo">
                     {/* <h2 >Bienvenido {props.sesionIniciada ? props.user : null}</h2> */}
-                    <h2 >Bienvenido {userSession && userSession.nombre ? userSession.nombre : null}</h2>
+                    <h2 >Bienvenido {user ? user.name : null}</h2>
                 </Link>
                 <div className="buttons">
-                    {userSession.logged ? 
-                        <Button variant="primary" type="submit" onClick= {handlleCerrarSesion}> 
+                    {user && user.name ?
+                        <Button variant="primary" type="submit" onClick={handlleCerrarSesion}>
                             Cerrar sesion
                         </Button>
                         :
@@ -40,7 +45,6 @@ const { userSession, logout } = useContext(UserSessionContext);
                             </Link>
                         </>}
                 </div>
-
 
             </div>
 

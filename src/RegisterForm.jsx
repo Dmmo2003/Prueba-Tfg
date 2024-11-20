@@ -1,113 +1,155 @@
 import React, { useContext } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import './styles/RegisterForm.css';
-import { UserSessionContext } from "./userSessionContext";
+import { useUserContext } from "./UserContext";
+// import { UserContext } from "./UserContext";
+import { register } from './api';
 
 
-export default function RegisterForm({ navigate, listaPaises}) {
+export default function RegisterForm({ navigate, listaPaises }) {
     const [paises, setPaises] = useState(Object.values(listaPaises));
-    const { userSession, updateUserSession } = useContext(UserSessionContext);
-    const [formData, setFormData] = useState({
-        nombre: '',
-        apellidos: '',
-        email: '',
-        pais: '',
-    });
+    const [nombre, setNombre] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [pais, setPais] = useState('');
+    const [apellido, setApellido] = useState('');
+    const [apellido2, setApellido2] = useState('');
+    const [passwordRep, setPasswordRep] = useState('');
+    const [error, setError] = useState(null); // Para mostrar errores
+    // const {user, updateUser} = useContext(UserContext);
+    const {loginUser} = useUserContext();
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const userData = {
+            name: nombre,
+            password: password,
+            email: email,
+            last_name: apellido,
+            last_name2: apellido2,
+            country: pais
+        };
+
+        try {
+            const response = await register(userData);
+            // alert(response.message);
+            console.log("Respuesta del servidor",response);
+            if (response) {
+                loginUser({
+                    name: nombre,
+                    email: email,
+                    last_name: apellido,
+                    last_name2: apellido2,
+                    country: pais,
+                });
+                navigate('/');
+            }
+        } catch (error) {
+            if (error.response?.data?.message) {
+                setError(error.response.data.message);
+            } else {
+                setError('Error desconocido');
+            }
+        }
     };
-
 
     const handleClick = () => {
         navigate(-1);
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        updateUserSession(formData);
-        console.log("EOOO",userSession);
-        // setFormData({
-        //     nombre: '',
-        //     apellidos: '',
-        //     email: '',
-        //     pais: '',
-        // })
-    };
-
+    useEffect(() => {
+        if (password !== passwordRep) {
+            setError('Las contraseñas no coinciden');
+        } else {
+            setError(null);
+        }
+    }, [passwordRep]);
 
 
     return (
         <div className="register-form-container">
             <h2>Registrate</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <Form onSubmit={handleSubmit}>
                 <Row className="mb-3">
                     <Form.Group as={Col} controlId="formGridName">
                         <Form.Label>Nombre</Form.Label>
                         <Form.Control
                             type="text"
-                            name="nombre"
                             placeholder="Escribe tu nombre"
-                            value={formData.nombre}
-                            onChange={handleChange} />
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridApellidos">
-                        <Form.Label>Apellidos</Form.Label>
+                        <Form.Label>Primer Apellido</Form.Label>
                         <Form.Control
                             type="text"
-                            name="apellidos"
-                            placeholder="Escribe tus apellidos"
-                            value={formData.apellidos}
-                            onChange={handleChange} />
+                            placeholder="Escribe tu primer apellido"
+                            value={apellido}
+                            onChange={(e) => setApellido(e.target.value)} />
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formGridApellidos2">
+                        <Form.Label>Segundo Apellido</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Escribe tu segundo apellido"
+                            value={apellido2}
+                            onChange={(e) => setApellido2(e.target.value)} />
                     </Form.Group>
                 </Row>
 
                 <Form.Group className="mb-3" controlId="formGridEmail">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control 
-                    type="email"
-                    name="email" 
-                    placeholder="Escribe tu correo electrónico" 
-                    value={formData.email} 
-                    onChange={handleChange} />
+                    <Form.Control
+                        type="email"
+                        placeholder="Escribe tu correo electrónico"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)} />
                 </Form.Group>
 
-                <Form.Group as={Col} controlId="formGridContrasena">
-                    <Form.Label>Contraseña</Form.Label>
-                    <Form.Control type="password" placeholder="Contraseña" />
-                </Form.Group>
-
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="formGridCity">
-                        <Form.Label>City</Form.Label>
-                        <Form.Control />
+                <Row>
+                    <Form.Group as={Col} controlId="formGridContrasena">
+                        <Form.Label>Contraseña</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Contraseña"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="formGridState">
-                        <Form.Label>Pais</Form.Label>
-                        <Form.Select name="pais" value={formData.pais} onChange={handleChange}>
-                            <option value="">--Elige tu pais--</option>
-                            {paises.map((pais, index) => (
-                                <option key={index} value={pais}>{pais}</option>
-                            ))}
-                            {/* {paises
-                                .filter((pais) => typeof pais === "string" && pais.trim() !== "") // Filtra valores válidos
-                                .map((pais, index) => (
-                                    <option key={index} value={pais}>{pais}</option>
-                                ))} */}
-                        </Form.Select>
+                    <Form.Group as={Col} controlId="formGridContrasena2">
+                        <Form.Label>Repite tu contraseña</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Repite tu contraseña"
+                            value={passwordRep}
+                            onChange={(e) => setPasswordRep(e.target.value)}
+                        />
                     </Form.Group>
-
                 </Row>
+                <Form.Group as={Col} controlId="formGridState">
+                    <Form.Label>Pais</Form.Label>
+                    <Form.Select name="pais" value={pais} onChange={(e) => setPais(e.target.value)}>
+                        <option value="">--Elige tu pais--</option>
+                        {paises.map((pais, index) => (
+                            <option key={index} value={pais}>{pais}</option>
+                        ))}
+                        {/* {paises
+                                 .filter((pais) => typeof pais === "string" && pais.trim() !== "") // Filtra valores válidos
+                                 .map((pais, index) => (
+                                     <option key={index} value={pais}>{pais}</option>
+                                 ))} */}
+                    </Form.Select>
+                </Form.Group>
 
                 <Form.Group className="mb-3" id="formGridCheckbox">
                     <Form.Check type="checkbox" label="Check me out" />
